@@ -1,5 +1,7 @@
-import { LivrosService } from './../../service/livro.service';
 import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { map, switchMap, tap } from 'rxjs';
+import { LivrosService } from './../../service/livro.service';
 import { Item, Livro } from 'src/app/models/livros.interface';
 import { LivroVolumeInfo } from 'src/app/models/livro-volume-info.model';
 
@@ -9,29 +11,23 @@ import { LivroVolumeInfo } from 'src/app/models/livro-volume-info.model';
   styleUrls: ['./lista-livros.component.css']
 })
 export class ListaLivrosComponent {
-  campoBusca: string = '';
+  campoBusca = new FormControl();
   listaLivros: Livro[];
-  livro: Livro;
 
-  constructor(private serviceLivros: LivrosService) { }
+  constructor(private _serviceLivrosService: LivrosService) { }
 
-  buscarLivros() {
-    this.serviceLivros.buscar(this.campoBusca).subscribe({
-      next: (dados) => {
-        console.log('Requisiçoes ao servidor');
-        this.listaLivros = this.itemsLivros(dados);
-      },
-      error: erro => console.log(erro)
-    })
-  }
+  livrosEncontrados$ = this.campoBusca.valueChanges.pipe(
+    tap(() => console.log('Fluxo inical')),
+    switchMap((valorDigitado: string) => this._serviceLivrosService.buscar(valorDigitado)),
+    map((items) => this.listaLivros = this.itemsLivros(items)),
+    tap(() => console.log('Requsisições ao servidor'))
+  )
 
-  // criamos uma "Class LivroVolumeInfo" e utilizando o map(),
+  // utilizando o map() para manipular os criamos uma "Class LivroVolumeInfo" e utilizando o map(),
   // para retornar apenas as informações, que desejamos exibir na tela;
   itemsLivros(items: Item[]): LivroVolumeInfo[] {
     return items.map(item => {
-      console.log('ITEM', item);
       return new LivroVolumeInfo(item);
     })
   }
-
 }
