@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { catchError, debounceTime, filter, map, switchMap, tap, throwError } from 'rxjs';
 import { LivrosService } from './../../service/livro.service';
-import { Item, Livro } from 'src/app/models/livros.interface';
+import { Item, Livro, LivrosResultado } from 'src/app/models/livros.interface';
 import { LivroVolumeInfo } from 'src/app/models/livro-volume-info.model';
 
 @Component({
@@ -19,6 +19,8 @@ export class ListaLivrosComponent {
 
   mensagemErro: string = '';
 
+  quantidadeLivros: LivrosResultado;
+
   constructor(private _serviceLivrosService: LivrosService) { }
 
   livrosEncontrados$ = this.campoBusca.valueChanges.pipe(
@@ -26,6 +28,7 @@ export class ListaLivrosComponent {
     debounceTime(this.PAUSA),
     filter((valorDigito) => valorDigito.length >= 3),
     switchMap((valorDigitado: string) => this._serviceLivrosService.buscar(valorDigitado)),
+    map(resultadoQuantidade => this.quantidadeLivros = resultadoQuantidade),
     map(resultado => resultado.items ?? []),
     map((items) => this.listaLivros = this.itemsLivros(items)),
     catchError(erro => {

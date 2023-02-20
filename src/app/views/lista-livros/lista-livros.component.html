@@ -10,6 +10,11 @@
     </button>
   </div>
   <p>Busque por assunto, autoria, nome...</p>
+  <div
+class="resultados"
+*ngIf="livrosEncontrados$ | async ">
+            {{ quantidadeLivros.totalItems}} resultados encontrados.
+</div>
   <div class="resultados mensagem-erro" *ngIf="mensagemErro">
     {{ mensagemErro }}
   </div>
