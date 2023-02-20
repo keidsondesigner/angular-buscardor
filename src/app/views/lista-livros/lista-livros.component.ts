@@ -26,9 +26,10 @@ export class ListaLivrosComponent {
     debounceTime(this.PAUSA),
     filter((valorDigito) => valorDigito.length >= 3),
     switchMap((valorDigitado: string) => this._serviceLivrosService.buscar(valorDigitado)),
+    map(resultado => resultado.items ?? []),
     map((items) => this.listaLivros = this.itemsLivros(items)),
     catchError(erro => {
-      console.log(erro)
+      console.log(erro);
       return throwError(() => new Error(this.mensagemErro = 'Ops, ocorreu um erro. Carregue novamente a página.'))
     }),
     tap(() => console.log('Requsisições ao servidor'))
