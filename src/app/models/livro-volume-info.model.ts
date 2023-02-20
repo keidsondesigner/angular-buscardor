@@ -1,4 +1,4 @@
-import { Item } from "./livros.interface";
+import { ImageLinks } from "./livros.interface";
 
 export class LivroVolumeInfo {
   title: string;
@@ -7,9 +7,9 @@ export class LivroVolumeInfo {
   publishedDate: string;
   description: string;
   previewLink: string;
-  thumbnail: string;
+  thumbnail: ImageLinks;
 
-  constructor(item: Item){
+  constructor(item){
     this.title = item.volumeInfo.title,
     this.authors = item.volumeInfo.authors,
     this.publisher = item.volumeInfo.publisher,
